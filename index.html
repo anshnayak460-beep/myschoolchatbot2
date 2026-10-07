@@ -1,316 +1,372 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>School AI Chatbot</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groq AI Chatbot</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #1565c0, #7b1fa2);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 15px;
-    }
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #111827);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    .chat-container {
-      width: 100%;
-      max-width: 700px;
-      height: 90vh;
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 12px 35px rgba(0,0,0,.3);
-    }
+.chat-container {
+  width: 95%;
+  max-width: 800px;
+  height: 90vh;
+  background: #1e293b;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,.4);
+  display: flex;
+  flex-direction: column;
+}
 
-    .header {
-      background: #1565c0;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
+.header {
+  padding: 18px;
+  background: #111827;
+  text-align: center;
+  border-bottom: 1px solid #334155;
+}
 
-    .header h1 {
-      font-size: 25px;
-    }
+.header h1 {
+  font-size: 24px;
+}
 
-    .header p {
-      margin-top: 6px;
-      opacity: .9;
-    }
+.header p {
+  color: #94a3b8;
+  font-size: 13px;
+  margin-top: 5px;
+}
 
-    #chatBox {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      background: #f5f7fb;
-    }
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
 
-    .message {
-      display: flex;
-      margin-bottom: 14px;
-    }
+.message {
+  display: flex;
+  margin-bottom: 16px;
+}
 
-    .message-content {
-      max-width: 82%;
-      padding: 12px 15px;
-      border-radius: 16px;
-      line-height: 1.5;
-      white-space: pre-wrap;
-    }
+.message.user {
+  justify-content: flex-end;
+}
 
-    .bot {
-      justify-content: flex-start;
-    }
+.bubble {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
 
-    .bot .message-content {
-      background: #e3f2fd;
-      color: #222;
-      border-bottom-left-radius: 4px;
-    }
+.bot .bubble {
+  background: #334155;
+  border-bottom-left-radius: 4px;
+}
 
-    .user {
-      justify-content: flex-end;
-    }
+.user .bubble {
+  background: #2563eb;
+  border-bottom-right-radius: 4px;
+}
 
-    .user .message-content {
-      background: #1565c0;
-      color: white;
-      border-bottom-right-radius: 4px;
-    }
+.input-area {
+  padding: 15px;
+  background: #111827;
+  display: flex;
+  gap: 10px;
+}
 
-    .input-area {
-      display: flex;
-      gap: 8px;
-      padding: 12px;
-      background: white;
-      border-top: 1px solid #ddd;
-    }
+#userInput {
+  flex: 1;
+  resize: none;
+  height: 50px;
+  border: none;
+  outline: none;
+  border-radius: 12px;
+  padding: 14px;
+  background: #334155;
+  color: white;
+  font-size: 15px;
+}
 
-    #question {
-      flex: 1;
-      border: 1px solid #ccc;
-      border-radius: 25px;
-      padding: 14px 17px;
-      outline: none;
-      font-size: 15px;
-    }
+#sendBtn {
+  width: 90px;
+  border: none;
+  border-radius: 12px;
+  background: #2563eb;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    #sendBtn {
-      border: none;
-      border-radius: 25px;
-      padding: 0 22px;
-      background: #1565c0;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
+#sendBtn:hover {
+  background: #1d4ed8;
+}
 
-    #sendBtn:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
+#sendBtn:disabled {
+  background: #475569;
+  cursor: not-allowed;
+}
 
-    .typing {
-      opacity: .7;
-      font-style: italic;
-    }
-  </style>
+.typing {
+  color: #94a3b8;
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.clear-btn {
+  margin-top: 8px;
+  padding: 7px 12px;
+  border: 1px solid #475569;
+  background: transparent;
+  color: #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.clear-btn:hover {
+  background: #334155;
+}
+</style>
 </head>
 
 <body>
 
-  <div class="chat-container">
+<div class="chat-container">
 
-    <div class="header">
-      <h1>🎓 School AI</h1>
-      <p>Your AI School Assistant</p>
-    </div>
-
-    <div id="chatBox">
-
-      <div class="message bot">
-        <div class="message-content">
-          👋 Hello! I am your School AI Assistant.
-
-          Ask me about school subjects, admission,
-          homework, school information, or general questions.
-        </div>
-      </div>
-
-    </div>
-
-    <div class="input-area">
-
-      <input
-        id="question"
-        type="text"
-        placeholder="Ask something..."
-        autocomplete="off"
-      >
-
-      <button id="sendBtn">Send</button>
-
-    </div>
-
+  <div class="header">
+    <h1>🤖 Groq AI Chatbot</h1>
+    <p>Powered by Groq API</p>
+    <button class="clear-btn" onclick="clearChat()">Clear Chat</button>
   </div>
 
+  <div id="chatBox" class="chat-box">
+    <div class="message bot">
+      <div class="bubble">
+        👋 Hello! I am your AI assistant. Ask me anything.
+      </div>
+    </div>
+  </div>
 
-  <script>
+  <div class="input-area">
+    <textarea
+      id="userInput"
+      placeholder="Type your message..."
+      onkeydown="handleKey(event)"
+    ></textarea>
 
-    /*
-      IMPORTANT:
+    <button id="sendBtn" onclick="sendMessage()">
+      Send
+    </button>
+  </div>
 
-      Do NOT put your Groq API key here.
+</div>
 
-      GitHub Pages is public. Anyone can inspect this
-      JavaScript and steal the key.
+<script>
+// ==========================================
+// GROQ API CONFIGURATION
+// ==========================================
 
-      The frontend sends the question to:
-          /api/chat
+// IMPORTANT:
+// Never publish your real API key in GitHub.
+// Replace this only for local testing.
+const GROQ_API_KEY = "YOUR_GROQ_API_KEY";
 
-      Your secure backend should call Groq.
-    */
+const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
+// You can change the model if needed.
+const MODEL = "llama-3.3-70b-versatile";
 
-    const chatBox = document.getElementById("chatBox");
-    const questionInput = document.getElementById("question");
-    const sendBtn = document.getElementById("sendBtn");
+let messages = [
+  {
+    role: "system",
+    content:
+      "You are a helpful, friendly AI assistant. Give clear and useful answers."
+  }
+];
 
+const chatBox = document.getElementById("chatBox");
+const userInput = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
 
-    function addMessage(text, type, extraClass = "") {
+function addMessage(text, type) {
 
-      const message = document.createElement("div");
+  const message = document.createElement("div");
+  message.className = "message " + type;
 
-      message.className = "message " + type;
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
 
-      const content = document.createElement("div");
+  bubble.textContent = text;
 
-      content.className =
-        "message-content " + extraClass;
+  message.appendChild(bubble);
+  chatBox.appendChild(message);
 
-      content.textContent = text;
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
 
-      message.appendChild(content);
+function showTyping() {
 
-      chatBox.appendChild(message);
+  const typing = document.createElement("div");
+  typing.id = "typing";
+  typing.className = "typing";
+  typing.textContent = "🤖 AI is thinking...";
 
-      chatBox.scrollTop = chatBox.scrollHeight;
+  chatBox.appendChild(typing);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
 
-      return message;
-    }
+function removeTyping() {
 
+  const typing = document.getElementById("typing");
 
-    async function sendMessage() {
+  if (typing) {
+    typing.remove();
+  }
+}
 
-      const question =
-        questionInput.value.trim();
+async function sendMessage() {
 
-      if (!question) return;
+  const text = userInput.value.trim();
 
-      addMessage(question, "user");
+  if (!text) return;
 
-      questionInput.value = "";
+  if (GROQ_API_KEY === "YOUR_GROQ_API_KEY") {
 
-      sendBtn.disabled = true;
-
-      const thinking =
-        addMessage(
-          "🤔 Thinking...",
-          "bot",
-          "typing"
-        );
-
-      try {
-
-        const response = await fetch(
-          "/api/chat",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-              message: question
-            })
-          }
-        );
-
-
-        if (!response.ok) {
-          throw new Error(
-            "Server error: " + response.status
-          );
-        }
-
-
-        const data =
-          await response.json();
-
-
-        thinking.remove();
-
-
-        addMessage(
-          data.reply ||
-          "Sorry, I couldn't generate a response.",
-          "bot"
-        );
-
-
-      } catch (error) {
-
-        thinking.remove();
-
-        addMessage(
-          "⚠️ AI server से connection नहीं हो पाया.\n\n" +
-          "Make sure your secure backend is running.",
-          "bot"
-        );
-
-        console.error(error);
-
-      } finally {
-
-        sendBtn.disabled = false;
-
-        questionInput.focus();
-
-      }
-    }
-
-
-    sendBtn.addEventListener(
-      "click",
-      sendMessage
+    addMessage(
+      "⚠️ Please add your Groq API key in the JavaScript code first.",
+      "bot"
     );
 
+    return;
+  }
 
-    questionInput.addEventListener(
-      "keydown",
-      function(event) {
+  addMessage(text, "user");
 
-        if (event.key === "Enter") {
-          sendMessage();
-        }
+  userInput.value = "";
 
-      }
+  sendBtn.disabled = true;
+  userInput.disabled = true;
+
+  messages.push({
+    role: "user",
+    content: text
+  });
+
+  showTyping();
+
+  try {
+
+    const response = await fetch(API_URL, {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + GROQ_API_KEY
+      },
+
+      body: JSON.stringify({
+
+        model: MODEL,
+
+        messages: messages,
+
+        temperature: 0.7,
+
+        max_tokens: 1024
+
+      })
+
+    });
+
+    const data = await response.json();
+
+    removeTyping();
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error?.message || "Groq API request failed."
+      );
+
+    }
+
+    const reply =
+      data.choices?.[0]?.message?.content ||
+      "Sorry, I could not generate a response.";
+
+    messages.push({
+      role: "assistant",
+      content: reply
+    });
+
+    addMessage(reply, "bot");
+
+  } catch (error) {
+
+    removeTyping();
+
+    addMessage(
+      "❌ Error: " + error.message,
+      "bot"
     );
 
-  </script>
+  } finally {
+
+    sendBtn.disabled = false;
+    userInput.disabled = false;
+    userInput.focus();
+
+  }
+}
+
+function handleKey(event) {
+
+  if (event.key === "Enter" && !event.shiftKey) {
+
+    event.preventDefault();
+
+    sendMessage();
+  }
+}
+
+function clearChat() {
+
+  messages = [
+    {
+      role: "system",
+      content:
+        "You are a helpful, friendly AI assistant. Give clear and useful answers."
+    }
+  ];
+
+  chatBox.innerHTML = `
+    <div class="message bot">
+      <div class="bubble">
+        👋 Chat cleared! Ask me something.
+      </div>
+    </div>
+  `;
+}
+
+userInput.focus();
+</script>
 
 </body>
 </html>
